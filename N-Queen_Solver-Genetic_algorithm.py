@@ -63,5 +63,45 @@ def genetic_algo(population, fitness):
             break
     return new_population
 
+if __name__ == "__main__":
+    nq = int(input("Enter Number of Queens: "))
+    maxFitness = (nq * (nq - 1)) / 2  # 8*7/2 = 28
+    population = [random_chromosome(nq) for _ in range(10)]
+    print()
+    print("Dimension : ", nq, "X", nq, "\nPopulation : ", len(population), "\n")
+    max_generation = int(input("Enter Maximun Generation Count: "))
+    print()
+    generation = 1
+    solve = 0
+    while not maxFitness in [fitness(chrom) for chrom in population]:
+        # generations
+        population = genetic_algo(population, fitness)
+        percent = 100.0 * generation / max_generation
+        sys.stdout.write('\r')
+        sys.stdout.write("Generation : [{:{}}] {:>3}% > Count: {:>3}".format('=' * int(percent / (100.0 / 50)), 50, int(percent), generation))
+        sys.stdout.flush()
+        generation += 1
+        if generation > max_generation:
+            solve = -1
+            break
+    print("\n")
+    if solve == -1:
+        print("No Solution found in ", max_generation, "Generations!")
+    else:
+        chrom_out = []
+        for chrom in population:
+            if fitness(chrom) == maxFitness:
+                print("Solution : ", chrom)
+                chrom_out = chrom
+        board = []
+        for x in range(nq):
+            board.append(["⬜"] * nq)
+        for i in range(nq):
+            board[nq - chrom_out[i]][i] = "⬛"
 
+        def print_board(board):
+            for row in board:
+                print(" ".join(row))
+        print("\nSolution Board:")
+        print_board(board)
 
